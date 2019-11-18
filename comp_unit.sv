@@ -6,10 +6,10 @@
   Author:         Justin Wilson, jkw0002@uah.edu
 				
 *********************************************************************************/
-module comp_unit(clk, mult_en, add_en, out_en, Ain, Bin, Cout, Aout, Bout, overflow);
+module comp_unit(clk, reset,  mult_en, add_en, out_en, Ain, Bin, Cout, Aout, Bout, overflow);
 	
 	// Inputs
-	input logic clk, mult_en, add_en;
+	input logic clk, reset, mult_en, add_en, out_en;
 	input logic [31:0] Ain, Bin;
 	
 	// Outputs
@@ -17,8 +17,8 @@ module comp_unit(clk, mult_en, add_en, out_en, Ain, Bin, Cout, Aout, Bout, overf
 	output logic [31:0] Cout, Aout, Bout;
 	
 	// Internal Clock Signal
-	logic  m_overflow, a_overflow, out_en;
-	logic [31:0] multout;
+	logic  m_overflow, a_overflow;
+	logic [31:0] multout,  Cin;
 	
 	// Multiply inputs
 	FP_Mult mult(mult_en, clk, Ain, Bin, m_overflow, multout);
@@ -27,7 +27,7 @@ module comp_unit(clk, mult_en, add_en, out_en, Ain, Bin, Cout, Aout, Bout, overf
 	FP_Adder adder(add_en, clk, multout, Cout, a_overflow, Cin);
 	
 	// Output Register
-	register C(clk, reset, out_en, Cin, Cout);
+	register #(32) C(clk, reset, out_en, Cin, Cout);
 	
 	// Outputs
 	assign overflow = m_overflow | a_overflow;
