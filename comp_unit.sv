@@ -26,12 +26,12 @@ module comp_unit(clk, reset,  mult_en, add_en, out_en, Ain, Bin, Cout, Aout, Bou
 	// Add Result to C register value
 	FP_Adder adder(add_en, clk, multout, Cout, a_overflow, Cin);
 	
-	// Output Register
+	// Output Registers
+	register #(32) A(clk, reset, out_en, Ain, Aout);
+	register #(32) B(clk, reset, out_en, Bin, Bout);
 	register #(32) C(clk, reset, out_en, Cin, Cout);
 	
 	// Outputs
 	assign overflow = m_overflow | a_overflow;
-	assign Aout = Ain;
-	assign Bout = Bin;
 
 endmodule
